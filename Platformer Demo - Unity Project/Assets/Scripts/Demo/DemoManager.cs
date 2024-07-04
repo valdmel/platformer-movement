@@ -5,7 +5,7 @@ using TMPro;
 public class DemoManager : MonoBehaviour
 {
     private Camera _cam;
-    private PlayerMovement _player;
+    private DashController _player;
     [SerializeField] private PlayerData[] playerTypes;
     [SerializeField] private Tilemap[] levels;
     [SerializeField] private Transform spawnPoint;
@@ -21,7 +21,7 @@ public class DemoManager : MonoBehaviour
     private void Awake()
     {
         _cam = FindObjectOfType<Camera>();
-        _player = GameObject.FindWithTag("Player").GetComponent<PlayerMovement>();
+        _player = GameObject.FindWithTag("Player").GetComponent<DashController>();
     }
 
     private void Start()
@@ -45,7 +45,7 @@ public class DemoManager : MonoBehaviour
 
     public void SwitchPlayerType(int index)
     {
-        _player.Data = playerTypes[index];
+        _player.PlayerData = playerTypes[index];
         _currentPlayerTypeIndex = index;
 
         switch(index)

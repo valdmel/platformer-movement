@@ -13,7 +13,7 @@ public class PlayerMovement : MonoBehaviour
 {
 	//Scriptable object which holds all the player's movement parameters. If you don't want to use it
 	//just paste in all the parameters, though you will need to manuly change all references in this script
-	public PlayerData Data;
+	public PlayerDataOld Data;
 
 	#region COMPONENTS
     public Rigidbody2D RB { get; private set; }
@@ -231,7 +231,27 @@ public class PlayerMovement : MonoBehaviour
 		else
 			IsSliding = false;
 		#endregion
+    }
 
+    private void FixedUpdate()
+	{
+		//Handle Run
+		if (!IsDashing)
+		{
+			if (IsWallJumping)
+				Run(Data.wallJumpRunLerp);
+			else
+				Run(1);
+		}
+		else if (_isDashAttacking)
+		{
+			Run(Data.dashEndRunLerp);
+		}
+
+		//Handle Slide
+		if (IsSliding)
+			Slide();
+		
 		#region GRAVITY
 		if (!_isDashAttacking)
 		{
@@ -276,26 +296,6 @@ public class PlayerMovement : MonoBehaviour
 			SetGravityScale(0);
 		}
 		#endregion
-    }
-
-    private void FixedUpdate()
-	{
-		//Handle Run
-		if (!IsDashing)
-		{
-			if (IsWallJumping)
-				Run(Data.wallJumpRunLerp);
-			else
-				Run(1);
-		}
-		else if (_isDashAttacking)
-		{
-			Run(Data.dashEndRunLerp);
-		}
-
-		//Handle Slide
-		if (IsSliding)
-			Slide();
     }
 
     #region INPUT CALLBACKS

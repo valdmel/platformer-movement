@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(menuName = "Player Data")] //Create a new playerData object by right clicking in the Project Menu then Create/Player/Player Data and drag onto the player
+[CreateAssetMenu(menuName = "Player Data With Dash")] //Create a new playerData object by right clicking in the Project Menu then Create/Player/Player Data and drag onto the player
 public class PlayerData : ScriptableObject
 {
 	[Header("Gravity")]
@@ -44,19 +44,6 @@ public class PlayerData : ScriptableObject
 	public float jumpHangAccelerationMult; 
 	public float jumpHangMaxSpeedMult; 				
 
-	[Header("Wall Jump")]
-	public Vector2 wallJumpForce; //The actual force (this time set by us) applied to the player when wall jumping.
-	[Space(5)]
-	[Range(0f, 1f)] public float wallJumpRunLerp; //Reduces the effect of player's movement while wall jumping.
-	[Range(0f, 1.5f)] public float wallJumpTime; //Time after wall jumping the player's movement is slowed for.
-	public bool doTurnOnWallJump; //Player will rotate to face wall jumping direction
-
-	[Space(20)]
-
-	[Header("Slide")]
-	public float slideSpeed;
-	public float slideAccel;
-
     [Header("Assists")]
 	[Range(0.01f, 0.5f)] public float coyoteTime; //Grace period after falling off a platform, where you can still jump
 	[Range(0.01f, 0.5f)] public float jumpInputBufferTime; //Grace period after pressing jump where a jump will be automatically performed once the requirements (eg. being grounded) are met.
@@ -94,10 +81,7 @@ public class PlayerData : ScriptableObject
 
 		//Calculate jumpForce using the formula (initialJumpVelocity = gravity * timeToJumpApex)
 		jumpForce = Mathf.Abs(gravityStrength) * jumpTimeToApex;
-
-		#region Variable Ranges
 		runAcceleration = Mathf.Clamp(runAcceleration, 0.01f, runMaxSpeed);
 		runDecceleration = Mathf.Clamp(runDecceleration, 0.01f, runMaxSpeed);
-		#endregion
 	}
 }
