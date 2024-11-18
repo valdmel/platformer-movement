@@ -30,11 +30,14 @@ public class JumpController : MonoBehaviour
     private void Update()
     {
         UpdateTimers();
-        HandleJump();
         CheckCollisions();
     }
 
-    private void FixedUpdate() => HandleGravity();
+    private void FixedUpdate()
+    {
+        HandleGravity();
+        HandleJump();
+    }
 
     private void UpdateTimers() => LastPressedJumpTime -= Time.deltaTime;
 
@@ -55,14 +58,7 @@ public class JumpController : MonoBehaviour
 
         if (dashController.IsDashing) return;
         
-        if (CanJump() && LastPressedJumpTime > 0f)
-        {
-            IsJumping = true;
-            IsJumpCut = false;
-            IsJumpFalling = false;
-
-            Jump();
-        }
+        if (CanJump() && LastPressedJumpTime > 0f) Jump();
     }
 
     private void HandleGravity()
@@ -91,21 +87,18 @@ public class JumpController : MonoBehaviour
             }
             else if (rigidbody.velocity.y < 0f)
             {
-                //Higher gravity if falling
-                SetGravityScale(playerData.gravityScale * playerData.fallGravityMult);
+                SetGravityScale(playerData.gravityScale * playerData.fallGravityMult); //Higher gravity if falling
                 //Caps maximum fall speed, so when falling over large distances we don't accelerate to insanely high speeds
                 rigidbody.velocity = new Vector2(rigidbody.velocity.x, Mathf.Max(rigidbody.velocity.y, -playerData.maxFallSpeed));
             }
             else
             {
-                //Default gravity if standing on a platform or moving upwards
-                SetGravityScale(playerData.gravityScale);
+                SetGravityScale(playerData.gravityScale); //Default gravity if standing on a platform or moving upwards
             }
         }
         else
         {
-            //No gravity when dashing (returns to normal once initial dashAttack phase over)
-            SetGravityScale(0f);
+            SetGravityScale(0f); //No gravity when dashing (returns to normal once initial dashAttack phase over)
         }
     }
     
@@ -118,7 +111,10 @@ public class JumpController : MonoBehaviour
     
     private void SetGravityScale(float scale) => rigidbody.gravityScale = scale;
     
-    public void OnJumpInput() => LastPressedJumpTime = playerData.jumpInputBufferTime;
+    public void OnJumpInput()
+    {
+        LastPressedJumpTime = playerData.jumpInputBufferTime;
+    }
 
     public void OnJumpUpInput()
     {
@@ -127,12 +123,17 @@ public class JumpController : MonoBehaviour
     
     private void Jump()
     {
+        IsJumping = true;
+        IsJumpCut = false;
+        IsJumpFalling = false;
         LastPressedJumpTime = 0f;
         groundDetector.LastOnGroundTime = 0f;
-        
         var jumpForce = playerData.jumpForce * Vector2.up;
-		
-        if (rigidbody.velocity.y < 0f) jumpForce.y -= rigidbody.velocity.y;
+
+        if (rigidbody.velocity.y < 0f)
+        {
+            jumpForce.y -= rigidbody.velocity.y;
+        }
 
         rigidbody.AddForce(jumpForce, ForceMode2D.Impulse);
     }
